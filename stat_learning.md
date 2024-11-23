@@ -146,3 +146,51 @@ lasso_cv |>
 ```
 
 ![](stat_learning_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+## Cluster pokemons
+
+``` r
+pokemon_df=
+  read_csv("data/pokemon.csv") |> 
+  janitor::clean_names() |> 
+  select(hp, speed)
+```
+
+    ## Rows: 800 Columns: 13
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (3): Name, Type 1, Type 2
+    ## dbl (9): #, Total, HP, Attack, Defense, Sp. Atk, Sp. Def, Speed, Generation
+    ## lgl (1): Legendary
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+pokemon_df |> 
+  ggplot(aes(x=hp, y=speed)) +
+  geom_point()
+```
+
+![](stat_learning_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+Let’s use kmeans to cluster these pokemon!! –can repeat process with 2,
+3 , 4, etc centers
+
+``` r
+kmeans_fit=
+  kmeans(x=pokemon_df, centers = 3)
+```
+
+can i plot these results
+
+``` r
+pokemon_df=
+  broom::augment(kmeans_fit, pokemon_df)
+
+pokemon_df |> 
+  ggplot(aes(x=hp, y=speed, color=.cluster))+
+  geom_point()
+```
+
+![](stat_learning_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
